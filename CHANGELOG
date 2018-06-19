@@ -1,3 +1,7 @@
+0.2.0
+-----
+* Given that there's scope for arbitrary code execution, employ django's signing tools to protect model and callback fields
+
 0.1.0
 -----
 * Add support for django 2.0

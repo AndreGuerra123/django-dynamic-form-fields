@@ -2,6 +2,7 @@
 import inspect
 from typing import Callable, List, Type
 
+from django.core import signing
 from django.db.models import Model
 from django.forms import Select
 
@@ -43,11 +44,11 @@ class DynamicChoicesWidget(Select):
         context.update({
             'df': {
                 'depends': self.depends_field,
-                'model': '{}.{}'.format(self.model._meta.app_label, self.model._meta.model_name),
+                'model': signing.dumps('{}.{}'.format(self.model._meta.app_label, self.model._meta.model_name)),
                 'no_value_disable': self.no_value_disable,
                 'include_empty_choice': self.include_empty_choice,
                 'empty_choice_label': self.empty_choice_label,
-                'callback': self.callback,
+                'callback': signing.dumps(self.callback),
             },
         })
         return context
