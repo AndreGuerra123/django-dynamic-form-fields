@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import inspect
 from typing import Callable, List, Type
+import re
 
 from django.core import signing
 from django.db.models import Model
@@ -41,9 +42,19 @@ class DynamicChoicesWidget(Select):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
+        depends_field = self.depends_field
+
+        matches = re.match(r'(.*)-(\d+|__prefix__)-(\w+)', name)
+        if matches:
+            form_name = matches.group(1)
+            form_id = matches.group(2)
+            my_name = matches.group(3)
+
+            depends_field = f'{form_name}-{form_id}-{depends_field}'
+
         context.update({
             'df': {
-                'depends': self.depends_field,
+                'depends': depends_field,
                 'model': signing.dumps('{}.{}'.format(self.model._meta.app_label, self.model._meta.model_name)),
                 'no_value_disable': self.no_value_disable,
                 'include_empty_choice': self.include_empty_choice,

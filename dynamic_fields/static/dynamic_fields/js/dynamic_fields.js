@@ -1,5 +1,7 @@
 (function($) {
-    $.fn.dynamic_field = function () {
+    $.fn.dynamic_field = function (opts) {
+        opts = opts || {};
+
         function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -26,11 +28,9 @@
             }
             return csrftoken;
         }
-
         function cast_python_bool_to_js(b) {
             return b === 'True';
         }
-
         function fetch_choices(initial) {
             if (depends_element.val()) {
                 $.ajax({
@@ -76,7 +76,6 @@
                 self.append('<option value="'+o.value+'">'+o.label+'</option>');
             });
         }
-
         function isString(obj) {
             return Object.prototype.toString.call(obj) === '[object String]'
         }
@@ -93,8 +92,11 @@
             initial_value = initial_value.split(',');
         }
 
-        var depends_element = $('select[name='+depends+']');
+        if (opts.prefix && opts.index && depends.indexOf('__prefix__') >= 0) {
+            depends = depends.replace('__prefix__', opts.index);
+        }
 
+        var depends_element = $('select[name='+depends+']');
         depends_element.on('change', function() {
             if ($(this).val() === '') {
                 if (no_value_disable) {
@@ -122,13 +124,28 @@
     var data_attr = 'data-dynamic-field-model';
     var selector = 'select[' + data_attr + ']';
     $(document).ready(function() {
-        $(selector).dynamic_field();
-        $(document).on('DOMNodeInserted', function (e) {
+        $(selector).each(function() {
+            $(this).dynamic_field();
+        });
+        $(document).on('DOMNodeInserted', function(e) {
             var target = $(e.target);
             if (target.find(selector)) {
                 var found = target.find(selector).first();
+                var prefix = null;
+                var index = null;
+
+                var total_forms = $('#id_protected_projects-3-branch')
+                    .closest('fieldset')
+                    .parent()
+                    .find('input[name*="TOTAL_FORMS"]');
+
+                if (total_forms.length > 0) {
+                    prefix = total_forms.attr('name').replace('-TOTAL_FORMS', '')
+                    index = total_forms.val();
+                }
+
                 if (found.is(selector)) {
-                    found.dynamic_field();
+                    found.dynamic_field({'prefix': prefix, 'index': index});
                 }
             }
         });
