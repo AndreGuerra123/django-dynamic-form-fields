@@ -11,4 +11,4 @@ install:
   - python setup.py -q install
 
 script:
-  - python setup.py test
+  - python testing/runtests.py
