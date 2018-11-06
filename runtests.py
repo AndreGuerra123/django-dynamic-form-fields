@@ -1,8 +1,11 @@
 from django.test import TestCase
+from django.test import Client
 
 class TestRunner(TestCase):
-   def test_0(self):
-       self.assertEqual(0-0, 0+0)
+   def test_main_view_get(self):
+       c = Client()
+       get_response = c.get('/choices/')
+       self.assertEqual(get_response.status_code,200)
 
 def runtests():
     TestRunner()
