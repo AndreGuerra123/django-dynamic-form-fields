@@ -17,7 +17,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'django>=1.11,<2.1',
+        'django>=1.11',
     ],
     python_requires='>=3.5',
 )
