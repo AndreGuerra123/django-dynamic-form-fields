@@ -2,7 +2,7 @@ import os, sys
 from django.test.utils import get_runner
 from django.conf import settings
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'test_project.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'testing.settings'
 test_dir = os.path.dirname(__file__)
 sys.path.insert(0, test_dir)
 
