@@ -20,5 +20,4 @@ setup(
         'django>=1.11',
     ],
     python_requires='>=3.5',
-    test_suite = "testing.runtests.runtests",
 )
