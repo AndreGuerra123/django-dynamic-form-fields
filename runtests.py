@@ -14,6 +14,7 @@ def run_tests(*test_args):
         test_args = ['tests']
 
     os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+    settings.configure()
     TestRunner = get_runner(settings)
     test_runner = TestRunner()
     failures = test_runner.run_tests(test_args)
