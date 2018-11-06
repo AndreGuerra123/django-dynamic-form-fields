@@ -1,16 +1,26 @@
-from django.test import TestCase
-from django.test import Client
+#!/usr/bin/env python
+# -*- coding: utf-8
+from __future__ import unicode_literals, absolute_import
 
-class TestRunner(TestCase):
-   c = Client()
+import os
+import sys
 
-   def test_main_view_get(self):
-       get_response = self.c.get('/choices/')
-       self.assertEqual(get_response.status_code,2011)
+import django
+from django.conf import settings
+from django.test.utils import get_runner
 
-def runtests():
-    runner = TestRunner()
-    runner.test_main_view_get()
-    
+
+def run_tests(*test_args):
+    if not test_args:
+        test_args = ['tests']
+
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+    django.setup()
+    TestRunner = get_runner(settings)
+    test_runner = TestRunner()
+    failures = test_runner.run_tests(test_args)
+    sys.exit(bool(failures))
+
+
 if __name__ == '__main__':
-    runtests()
+run_tests(*sys.argv[1:])
